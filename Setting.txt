@@ -1,0 +1,7 @@
+================================================
+=This is the setting text file for the program
+=Make a list of stock data you want below without the equal sign as the first character
+=If a 'v' is at the end of the line, then the program will not download full data (for first time downloads)=15: aapl v
+================================================
+aapl
+msft
