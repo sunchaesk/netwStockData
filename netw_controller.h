@@ -20,6 +20,7 @@ class netw_controller{
         void d_print_stock_list();
     private:
         vector<string> stock_list;
+        string api_key;
 };
 
 #endif

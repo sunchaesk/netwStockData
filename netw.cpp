@@ -1,7 +1,7 @@
 
 #include "netw.h"
 
-string curl_network::sym = "";
+string netw::sym = "";
 
 using namespace std;
 
@@ -34,7 +34,7 @@ void initialize_folder()
     fs::create_directory("data");
 }
 
-void initialize_setting(){
+void netw::initialize_setting(){
     if(!file_exists("Setting.txt")){
         ofstream ofile;
         ofile.open("Setting.txt", ios::out);
@@ -44,12 +44,17 @@ void initialize_setting(){
         ofile << "=If a 'v' is at the end of the line, then the program will not download full data (for first time downloads)";
         ofile << "=15: aapl v\n";
         ofile << "================================================\n";
+        ofile << "=You also have to initialize the api key for TwelveData api\n";
+        ofile << "=The program will read the line that starts with ':' as the api key\n";
+        ofile << "=Put the api key below:\n";
+        ofile << ":\n";
+        ofile << "================================================\n";
         ofile.close();
     }
 }
 
 /////////////////// MEMBER FUNCTIONS //////////////////////////
-void curl_network::print_data()
+void netw::print_data()
 // function for debugging, just prints obj data
 {
     cout << "\n\n=====================\n" << this->data_req
@@ -69,7 +74,7 @@ size_t parse_received_data(char *buffer, size_t itemsize, size_t nitems, void *i
 }
 
 
-void curl_network::run_curl()
+void netw::run_curl()
 // send login req to kibot
 // but only if the response is that u r already logined
 {
@@ -87,14 +92,14 @@ void curl_network::run_curl()
     CURLcode result = curl_easy_perform(curl);
     cout << result << '\n';
     // checking if the returned data is json which means I am out of reqs
-    string f_loc = "data/" + curl_network::sym + ".txt";
+    string f_loc = "data/" + netw::sym + ".txt";
     ofstream ofile;
     ofile.open(f_loc, ios::app);
     if (temp_buffer[0] == '{'){
         cerr << "Req failed: Only 8 req allowed per minute\n";
         cerr << "Waiting and retrying...\n";
 //
-        usleep(600);
+        usleep(60000000);
         result = curl_easy_perform(curl);
         if (temp_buffer[0] == '{'){
             cerr << "Out of reqs for the month\n";
@@ -107,7 +112,7 @@ void curl_network::run_curl()
     curl_easy_cleanup(curl);
 }
 
-void curl_network::change_url(const string& sym, int outputsize, const string& intv){
+void netw::change_url(const string& sym, int outputsize, const string& intv){
     string suffix = "";
 
     if (sym.size() < 1 || sym.size() > 12){
@@ -134,10 +139,10 @@ void curl_network::change_url(const string& sym, int outputsize, const string& i
 }
 
 ////// CONSTRUCTORS /////////////////////////////////////////
-curl_network::curl_network(const string& sym)
+netw::netw(const string& sym, const string& api)
 // this constructor is for when downloading all data
 {
-    strncpy(api_key, "ab97acf35a714df4bd85033672b69104", 70);
+    strncpy(api_key, api.c_str(), 70);
 
     string suffix = "";
 
@@ -164,10 +169,10 @@ curl_network::curl_network(const string& sym)
     initialize_setting();
 }
 
-curl_network::curl_network(const string& sym, int outputsize, const string& startdate, const string& intv){
+netw::netw(const string& sym, int outputsize, const string& startdate, const string& intv, const string& api){
     // login url username: guest, psswd: guest
     // you get 20 min access
-    strncpy(api_key, "ab97acf35a714df4bd85033672b69104", 70);
+    strncpy(api_key, api.c_str(), 70);
 
     //data_req = "";
     //data_req += "http://api.kibot.com/?action=history";
@@ -209,8 +214,9 @@ curl_network::curl_network(const string& sym, int outputsize, const string& star
     initialize_setting();
 }
 
-curl_network::curl_network(const string& sym, int outputsize, const string& intv){
-    strncpy(api_key, "ab97acf35a714df4bd85033672b69104", 70);
+netw::netw(const string& sym, int outputsize, const string& intv, const string& api){
+
+    strncpy(api_key, api.c_str(), 70);
 
     string suffix = "";
 

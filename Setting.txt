@@ -3,5 +3,10 @@
 =Make a list of stock data you want below without the equal sign as the first character
 =If a 'v' is at the end of the line, then the program will not download full data (for first time downloads)=15: aapl v
 ================================================
+=You also have to initialize the api key for TwelveData api
+=The program will read the line that starts with ':' as the api key
+=Put the api key below:
+:ab97acf35a714df4bd85033672b69104
+================================================
 aapl
 msft

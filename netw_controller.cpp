@@ -52,18 +52,27 @@ void netw_controller::initialize_setting(){
         ofile << "=If a 'v' is at the end of the line, then the program will not download full data (for first time downloads)";
         ofile << "=15: aapl v\n";
         ofile << "================================================\n";
+        ofile << "=You also have to initialize the api key for TwelveData api\n";
+        ofile << "=The program will read the line that starts with '::' as the api key\n";
+        ofile << "=Put the api key below:\n";
+        ofile << "::\n";
+        ofile << "================================================\n";
         ofile.close();
     }
 }
 
 void netw_controller::parse_setting_file(){
-    curl_network c("def");
+    netw c("def", api_key);
     string line;
     ifstream ifile ("Setting.txt");
     if (ifile.is_open()){
         while( getline(ifile, line) ){
-            if(line[0] == '=') continue;
-            if (line.size() > 12 || line.size() < 1) {
+            if(line[0] == '='){
+                continue;
+            } else if(line[0] == ':'){
+                string api = line.substr(1, line.size());
+                this->api_key = api;
+            } else if (line.size() > 12 || line.size() < 1) {
                 cerr << "Invalid Stock Symbol is Setting.txt download list\n";
                 exit(1);
             } else {
@@ -78,7 +87,7 @@ void netw_controller::parse_setting_file(){
 
 void netw_controller::stock_list_send_req(int outputsize){
     // set initial string stock as TEMP so that the format will be csv
-    curl_network c("TEMP");
+    netw c("TEMP", api_key);
     for (size_t i = 0; i < stock_list.size(); ++i){
         if (file_exists(stock_list[i] + ".txt")){
             cout << "\n============" << stock_list[i] << " file exists, no update made===========\n";

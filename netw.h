@@ -4,17 +4,19 @@
 #include <bits/stdc++.h>
 #include <curl/curl.h>
 
-
 using namespace std;
 
-class curl_network{
+class netw{
     public:
-        curl_network(const string& sym, int outputsize, const string& startdate, const string& intv);
-        curl_network(const string& sym);
-        curl_network(const string& sym, int outputsize, const string& intv);
-        curl_network() {};
+        netw(const string& sym, int outputsize, const string& startdate,
+             const string& intv, const string& api_key);
+        netw(const string& sym, const string& api_key);
+        netw(const string& sym, int outputsize, const string& intv,
+             const string& api_key);
+        netw() {};
         // size_t parse_received_data(char *buffer, size_t itemsize, size_t nitmes, void *ignorethis);
         void initialize_folder();
+        void initialize_setting();
         void run_curl();
         void change_url(const string& sym, int outputsize, const string& intv);
         static string sym;
